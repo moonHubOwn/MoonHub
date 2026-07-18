@@ -1,0 +1,1164 @@
+-- // MOON HUB — С КИКАМИ ИЗ POLAR HUB
+-- // КЛЮЧ: Abfoldq12gf
+
+-- =============================================
+-- // ЗАГРУЗКА БИБЛИОТЕКИ SOLARIS
+-- =============================================
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/katnaa-debug/SolarisUI/refs/heads/main/Library1.lua"))()
+
+-- =============================================
+-- // КЕЙ СИСТЕМА
+-- =============================================
+local function KeySystem()
+    local CorrectKey = "Abfoldq12gf"
+    
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "KeySystem"
+    screenGui.Parent = game:GetService("CoreGui")
+
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 400, 0, 250)
+    frame.Position = UDim2.new(0.5, -200, 0.5, -125)
+    frame.BackgroundColor3 = Color3.fromRGB(15, 15, 25)
+    frame.BackgroundTransparency = 0.05
+    frame.BorderSizePixel = 0
+    frame.ClipsDescendants = true
+    frame.Parent = screenGui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 12)
+    corner.Parent = frame
+
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 50)
+    title.Position = UDim2.new(0, 0, 0, 10)
+    title.BackgroundTransparency = 1
+    title.Text = "KEY SYSTEM"
+    title.TextColor3 = Color3.fromRGB(255, 200, 100)
+    title.TextSize = 24
+    title.Font = Enum.Font.GothamBold
+    title.Parent = frame
+
+    local subtitle = Instance.new("TextLabel")
+    subtitle.Size = UDim2.new(1, 0, 0, 30)
+    subtitle.Position = UDim2.new(0, 0, 0, 55)
+    subtitle.BackgroundTransparency = 1
+    subtitle.Text = "Enter key to unlock"
+    subtitle.TextColor3 = Color3.fromRGB(150, 150, 180)
+    subtitle.TextSize = 14
+    subtitle.Font = Enum.Font.Gotham
+    subtitle.Parent = frame
+
+    local input = Instance.new("TextBox")
+    input.Size = UDim2.new(0.8, 0, 0, 45)
+    input.Position = UDim2.new(0.1, 0, 0, 100)
+    input.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+    input.BackgroundTransparency = 0.3
+    input.BorderSizePixel = 0
+    input.PlaceholderText = "Enter key..."
+    input.PlaceholderColor3 = Color3.fromRGB(100, 100, 130)
+    input.Text = ""
+    input.TextColor3 = Color3.fromRGB(255, 255, 255)
+    input.TextSize = 18
+    input.Font = Enum.Font.Gotham
+    input.ClearTextOnFocus = false
+    input.Parent = frame
+
+    local inputCorner = Instance.new("UICorner")
+    inputCorner.CornerRadius = UDim.new(0, 8)
+    inputCorner.Parent = input
+
+    local submitBtn = Instance.new("TextButton")
+    submitBtn.Size = UDim2.new(0.4, 0, 0, 45)
+    submitBtn.Position = UDim2.new(0.3, 0, 0, 165)
+    submitBtn.BackgroundColor3 = Color3.fromRGB(255, 200, 100)
+    submitBtn.BackgroundTransparency = 0.1
+    submitBtn.BorderSizePixel = 0
+    submitBtn.Text = "UNLOCK"
+    submitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    submitBtn.TextSize = 18
+    submitBtn.Font = Enum.Font.GothamBold
+    submitBtn.Parent = frame
+
+    local btnCorner = Instance.new("UICorner")
+    btnCorner.CornerRadius = UDim.new(0, 8)
+    btnCorner.Parent = submitBtn
+
+    local status = Instance.new("TextLabel")
+    status.Size = UDim2.new(1, 0, 0, 25)
+    status.Position = UDim2.new(0, 0, 0, 220)
+    status.BackgroundTransparency = 1
+    status.Text = ""
+    status.TextColor3 = Color3.fromRGB(255, 100, 100)
+    status.TextSize = 13
+    status.Font = Enum.Font.Gotham
+    status.Parent = frame
+
+    local function CheckAndUnlock()
+        local key = input.Text
+        if key == CorrectKey then
+            status.Text = "KEY ACCEPTED!"
+            status.TextColor3 = Color3.fromRGB(100, 255, 100)
+            task.wait(0.5)
+            screenGui:Destroy()
+            LoadMenu()
+        else
+            status.Text = "INVALID KEY!"
+            status.TextColor3 = Color3.fromRGB(255, 100, 100)
+            input.Text = ""
+            input:CaptureFocus()
+        end
+    end
+
+    submitBtn.MouseButton1Click:Connect(CheckAndUnlock)
+    input.FocusLost:Connect(function(enterPressed)
+        if enterPressed then CheckAndUnlock() end
+    end)
+    input:CaptureFocus()
+end
+
+-- =============================================
+-- // ИНИЦИАЛИЗАЦИЯ
+-- =============================================
+local Players = game:GetService("Players")
+local RS = game:GetService("ReplicatedStorage")
+local UIS = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+local Lighting = game:GetService("Lighting")
+local CoreGui = game:GetService("CoreGui")
+local TeleportService = game:GetService("TeleportService")
+local RunService = game:GetService("RunService")
+local Debris = game:GetService("Debris")
+local plr = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+-- РЕМОУТЫ
+local GrabEvents = RS:WaitForChild("GrabEvents")
+local SetNetworkOwner = GrabEvents:WaitForChild("SetNetworkOwner")
+local DestroyGrabLine = GrabEvents:WaitForChild("DestroyGrabLine")
+local MenuToys = RS:WaitForChild("MenuToys")
+local SpawnToyRF = MenuToys:WaitForChild("SpawnToyRemoteFunction")
+local DestroyToy = MenuToys:FindFirstChild("DestroyToy")
+
+-- =============================================
+-- // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+-- =============================================
+local function getChar() 
+    return plr.Character or plr.CharacterAdded:Wait() 
+end
+
+local function getHRP()
+    local char = getChar()
+    if not char then return nil end
+    return char:FindFirstChild("HumanoidRootPart") or char:FindFirstChild("Head")
+end
+
+local function getHum()
+    local char = getChar()
+    if not char then return nil end
+    return char:FindFirstChildOfClass("Humanoid")
+end
+
+local function getPlayerByName(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        if string.sub(string.lower(p.Name), 1, #name) == string.lower(name) then 
+            return p 
+        end
+    end
+    return nil
+end
+
+local function FWC(obj, name)
+    return obj:FindFirstChild(name) or obj:WaitForChild(name, 3)
+end
+
+-- =============================================
+-- // СОСТОЯНИЯ
+-- =============================================
+local state = {
+    antiGrab = false,
+    targetPlayer = nil,
+    running = true,
+    ownershipKick = false,
+    palletRagdoll = false,
+    loopKill = false,
+    blobKill = false,
+    lockTarget = false,
+}
+
+-- =============================================
+-- // ========== OWNERSHIP KICK (ИЗ POLAR) ==========
+-- =============================================
+local ownershipKickTask = nil
+
+local function OwnershipKickFunction(targetName)
+    local target = Players:FindFirstChild(targetName)
+    if not target then return end
+    
+    local GE = GrabEvents
+    local myChar = plr.Character
+    local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+    if not myRoot then return end
+
+    local savedPos = myRoot.CFrame 
+    local dragging = false
+    local grabStartTime = 0
+    local checkStartTime = 0
+    
+    local currentFPS = 60
+    local fpsConnection = RunService.RenderStepped:Connect(function(dt)
+        currentFPS = 1 / dt
+    end)
+
+    local bodyPos = nil
+    local bodyGyro = nil
+
+    local function cleanupBodies()
+        pcall(function()
+            if bodyPos then bodyPos:Destroy() bodyPos = nil end
+            if bodyGyro then bodyGyro:Destroy() bodyGyro = nil end
+        end)
+    end
+
+    local function createBodies(targetRoot, pos)
+        cleanupBodies()
+        
+        for _, v in pairs(targetRoot:GetChildren()) do
+            if v:IsA("BodyPosition") or v:IsA("BodyGyro") then
+                v:Destroy()
+            end
+        end
+        
+        bodyPos = Instance.new("BodyPosition")
+        bodyPos.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+        bodyPos.D = 100
+        bodyPos.Position = pos
+        bodyPos.Parent = targetRoot
+        
+        bodyGyro = Instance.new("BodyGyro")
+        bodyGyro.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+        bodyGyro.CFrame = CFrame.new(pos)
+        bodyGyro.Parent = targetRoot
+    end
+
+    while state.ownershipKick do
+        local currentTarget = Players:FindFirstChild(target.Name)
+        if not currentTarget or not currentTarget.Parent then 
+            cleanupBodies()
+            break 
+        end
+        
+        myChar = plr.Character
+        myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+        local tChar = currentTarget.Character
+        local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+        local tHum = tChar and tChar:FindFirstChild("Humanoid")
+        
+        if tRoot and tHum and tHum.Health > 0 and myRoot then
+            if not dragging then
+                myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 3)
+                cleanupBodies()
+                checkStartTime = 0
+                
+                pcall(function()
+                    tHum.PlatformStand = true
+                    tHum.Sit = true
+                    SetNetworkOwner:FireServer(tRoot, tRoot.CFrame)
+                    SetNetworkOwner:FireServer(tRoot, tRoot.CFrame)
+                    DestroyGrabLine:FireServer(tRoot)
+                end)
+                
+                myRoot.AssemblyLinearVelocity = Vector3.zero
+                myRoot.AssemblyAngularVelocity = Vector3.zero
+                
+                if grabStartTime == 0 then grabStartTime = tick() end
+                if tick() - grabStartTime > 0.35 then
+                    dragging = true
+                    grabStartTime = 0
+                    checkStartTime = tick()
+                    local lockPos = savedPos * CFrame.new(0, 17, 0)
+                    createBodies(tRoot, lockPos.Position)
+                end
+            else
+                myRoot.CFrame = savedPos
+                local lockPos = savedPos * CFrame.new(0, 17, 0)
+                
+                myRoot.AssemblyLinearVelocity = Vector3.zero
+                myRoot.AssemblyAngularVelocity = Vector3.zero
+                
+                if bodyPos and bodyPos.Parent then
+                    bodyPos.Position = lockPos.Position
+                    if bodyGyro then
+                        bodyGyro.CFrame = lockPos
+                    end
+                else
+                    createBodies(tRoot, lockPos.Position)
+                end
+                
+                tHum.PlatformStand = true
+                
+                pcall(function()
+                    if currentFPS > 200 then
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        DestroyGrabLine:FireServer(tRoot)
+                    elseif currentFPS >= 155 and currentFPS <= 200 then
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        DestroyGrabLine:FireServer(tRoot)
+                    else 
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        SetNetworkOwner:FireServer(tRoot, lockPos)
+                        DestroyGrabLine:FireServer(tRoot)
+                    end
+                end)
+                
+                if checkStartTime > 0 and tick() - checkStartTime > 0.30 then
+                    local currentDist = (tRoot.Position - lockPos.Position).Magnitude
+                    
+                    if currentDist > 10 then
+                        dragging = false
+                        grabStartTime = 0
+                        checkStartTime = 0
+                        cleanupBodies()
+                        myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 3)
+                    else
+                        checkStartTime = tick()
+                    end
+                end
+            end
+        else
+            dragging = false
+            grabStartTime = 0
+            checkStartTime = 0
+            cleanupBodies()
+        end
+        RunService.Heartbeat:Wait()
+    end
+    
+    fpsConnection:Disconnect()
+    cleanupBodies()
+    if myRoot then myRoot.CFrame = savedPos end
+end
+
+-- =============================================
+-- // ========== PALLET RAGDOLL (ИЗ POLAR) ==========
+-- =============================================
+local palletRagdollTask = nil
+
+local function PalletRagdollFunction(targetName)
+    local target = Players:FindFirstChild(targetName)
+    if not target or not target.Character then return end
+    
+    local GE = GrabEvents
+    local skyPos = CFrame.new(0, 800000, 0)
+    
+    SpawnToyRF:InvokeServer("PalletLightBrown", skyPos, Vector3.zero)
+    
+    local pallet
+    repeat
+        pallet = workspace:FindFirstChild(plr.Name.."SpawnedInToys") 
+            and workspace[plr.Name.."SpawnedInToys"]:FindFirstChild("PalletLightBrown")
+        RunService.Heartbeat:Wait()
+    until pallet or not state.palletRagdoll
+    
+    if not pallet then return end
+    
+    local mainPart = pallet:FindFirstChild("SoundPart")
+    if not mainPart then return end
+    
+    mainPart.CanCollide = false
+    mainPart.Anchored = false
+    
+    local function claim(part)
+        SetNetworkOwner:FireServer(part, part.CFrame)
+        DestroyGrabLine:FireServer(part)
+    end
+    
+    claim(mainPart)
+    
+    while state.palletRagdoll do
+        for i = 1, 20 do
+            RunService.Heartbeat:Wait()
+        end
+        
+        if not target or not target.Parent or not target.Character then break end
+        
+        local head = target.Character:FindFirstChild("Head")
+        if not head then continue end
+        
+        local targetPos = head.Position
+        mainPart.CFrame = CFrame.new(targetPos.X, targetPos.Y + 0.2, targetPos.Z)
+        mainPart.AssemblyLinearVelocity = Vector3.zero
+        mainPart.AssemblyAngularVelocity = Vector3.new(1000, 1000, 1000)
+        
+        claim(mainPart)
+        
+        mainPart.CanCollide = true
+        for i = 1, 3 do
+            RunService.Heartbeat:Wait()
+        end
+        
+        mainPart.CanCollide = false
+        mainPart.CFrame = skyPos
+        mainPart.AssemblyAngularVelocity = Vector3.zero
+    end
+    
+    if pallet then
+        pcall(function()
+            if DestroyToy then DestroyToy:FireServer(pallet) end
+        end)
+        if pallet.Parent then 
+            pallet:Destroy() 
+        end
+    end
+end
+
+-- =============================================
+-- // ========== LOOP KILL (ИЗ POLAR) ==========
+-- =============================================
+local loopKillTask = nil
+
+local function LoopKillFunction(targetName)
+    local target = Players:FindFirstChild(targetName)
+    if not target then return end
+    
+    local GE = GrabEvents
+
+    while state.loopKill and target and target.Parent do
+        if not target.Character then
+            task.wait(0.5)
+            continue
+        end
+        local myChar = plr.Character
+        local myRoot = myChar and myChar:FindFirstChild("HumanoidRootPart")
+        local tChar = target.Character
+        local tRoot = tChar and tChar:FindFirstChild("HumanoidRootPart")
+        local tHum = tChar and tChar:FindFirstChild("Humanoid")
+        if tRoot and tHum and tHum.Health > 0 and myRoot then
+            local currentPos = myRoot.CFrame
+            local attackStart = tick()
+            while tick() - attackStart < 0.35 and state.loopKill do
+                if not tRoot.Parent then break end
+                myRoot.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
+                myRoot.AssemblyLinearVelocity = Vector3.zero
+                pcall(function()
+                    SetNetworkOwner:FireServer(tRoot, myRoot.CFrame)
+                    tHum:ChangeState(Enum.HumanoidStateType.Dead)
+                    tHum.Health = 0
+                    DestroyGrabLine:FireServer(tRoot)
+                end)
+                RunService.Heartbeat:Wait()
+            end
+            if myRoot then
+                myRoot.CFrame = currentPos
+                myRoot.AssemblyLinearVelocity = Vector3.zero
+            end
+            task.wait(1.2)
+        else
+            task.wait(0.5)
+        end
+    end
+    local char = plr.Character
+    local root = char and char:FindFirstChild("HumanoidRootPart")
+    if root then root.AssemblyLinearVelocity = Vector3.zero end
+end
+
+-- =============================================
+-- // ========== BLOB KILL (ИЗ POLAR) ==========
+-- =============================================
+local blobKillTask = nil
+
+local function BlobKillFunction(targetName)
+    local target = Players:FindFirstChild(targetName)
+    if not target then return end
+    
+    local GE = GrabEvents
+    local myChar = plr.Character
+    local myHum = myChar and myChar:FindFirstChild("Humanoid")
+    if not myHum or not myHum.SeatPart then
+        Library:Notify({Title = "Error", Content = "Sit on Blobman first!", Duration = 2})
+        return
+    end
+    
+    local myBlob = myHum.SeatPart.Parent
+    if not myBlob or myBlob.Name ~= "CreatureBlobman" then
+        Library:Notify({Title = "Error", Content = "Not on Blobman!", Duration = 2})
+        return
+    end
+    
+    local blobScript = myBlob:FindFirstChild("BlobmanSeatAndOwnerScript")
+    if not blobScript then return end
+    
+    local CG = blobScript:FindFirstChild("CreatureGrab")
+    local CR = blobScript:FindFirstChild("CreatureRelease")
+    local CD = blobScript:FindFirstChild("CreatureDrop")
+    
+    if not (CG and CR and CD) then return end
+    
+    local leftDet = myBlob:FindFirstChild("LeftDetector")
+    local rightDet = myBlob:FindFirstChild("RightDetector")
+    local leftWeld = leftDet and leftDet:FindFirstChild("LeftWeld")
+    local rightWeld = rightDet and rightDet:FindFirstChild("RightWeld")
+    
+    if not (leftDet and rightDet and leftWeld and rightWeld) then return end
+    
+    local myHRP = myChar:FindFirstChild("HumanoidRootPart")
+    if not myHRP then return end
+    
+    while state.blobKill do
+        local tChar = target.Character
+        if not tChar then
+            task.wait(0.5)
+            continue
+        end
+        
+        local tRoot = tChar:FindFirstChild("HumanoidRootPart")
+        local tHum = tChar:FindFirstChild("Humanoid")
+        if not tRoot or not tHum or tHum.Health <= 0 then
+            task.wait(0.5)
+            continue
+        end
+        
+        local savedPos = myHRP.CFrame
+        
+        pcall(function()
+            myHRP.CFrame = tRoot.CFrame * CFrame.new(0, 0, 2)
+            task.wait(0.05)
+            
+            CG:FireServer(leftDet, tRoot, leftWeld)
+            task.wait(0.1)
+            CG:FireServer(rightDet, tRoot, rightWeld)
+            task.wait(0.1)
+            
+            tHum.Health = 0
+            tHum:ChangeState(Enum.HumanoidStateType.Dead)
+            
+            CR:FireServer(leftWeld, tRoot)
+            CR:FireServer(rightWeld, tRoot)
+            
+            myHRP.CFrame = savedPos
+        end)
+        
+        task.wait(1)
+    end
+end
+
+-- =============================================
+-- // ========== LOCK TARGET (ИЗ POLAR) ==========
+-- =============================================
+local lockTask = nil
+local lockRunning = false
+
+local function LockTargetFunction(targetName)
+    local target = Players:FindFirstChild(targetName)
+    if not target then return end
+    
+    local GE = GrabEvents
+    local myChar = plr.Character
+    local myHum = myChar and myChar:FindFirstChild("Humanoid")
+    if not myHum or not myHum.SeatPart then
+        Library:Notify({Title = "Error", Content = "Sit on Blobman first!", Duration = 2})
+        return
+    end
+    
+    local myBlob = myHum.SeatPart.Parent
+    if not myBlob or myBlob.Name ~= "CreatureBlobman" then
+        Library:Notify({Title = "Error", Content = "Not on Blobman!", Duration = 2})
+        return
+    end
+    
+    local blobScript = myBlob:FindFirstChild("BlobmanSeatAndOwnerScript")
+    if not blobScript then return end
+    
+    local CG = blobScript:FindFirstChild("CreatureGrab")
+    local CR = blobScript:FindFirstChild("CreatureRelease")
+    
+    if not (CG and CR) then return end
+    
+    local leftDet = myBlob:FindFirstChild("LeftDetector")
+    local leftWeld = leftDet and leftDet:FindFirstChild("LeftWeld")
+    
+    if not leftDet or not leftWeld then return end
+    
+    local myHRP = myChar:FindFirstChild("HumanoidRootPart")
+    if not myHRP then return end
+    
+    lockRunning = true
+    
+    while state.lockTarget and lockRunning do
+        local tChar = target.Character
+        if not tChar then
+            task.wait(0.5)
+            continue
+        end
+        
+        local tRoot = tChar:FindFirstChild("HumanoidRootPart")
+        local tHum = tChar:FindFirstChild("Humanoid")
+        if not tRoot or not tHum or tHum.Health <= 0 then
+            task.wait(0.5)
+            continue
+        end
+        
+        pcall(function()
+            CG:FireServer(leftDet, tRoot, leftWeld)
+            task.wait(0.05)
+            
+            tHum.Sit = true
+            tHum.PlatformStand = true
+            
+            SetNetworkOwner:FireServer(tRoot, tRoot.CFrame)
+            DestroyGrabLine:FireServer(tRoot)
+            
+            local bp = tRoot:FindFirstChild("LockBP")
+            if not bp then
+                bp = Instance.new("BodyPosition")
+                bp.Name = "LockBP"
+                bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                bp.P = 100000
+                bp.D = 50000
+                bp.Parent = tRoot
+            end
+            bp.Position = tRoot.Position
+        end)
+        
+        task.wait(0.1)
+    end
+    
+    -- Очистка
+    local tChar = target.Character
+    if tChar then
+        local tRoot = tChar:FindFirstChild("HumanoidRootPart")
+        if tRoot then
+            local bp = tRoot:FindFirstChild("LockBP")
+            if bp then bp:Destroy() end
+            local tHum = tChar:FindFirstChild("Humanoid")
+            if tHum then
+                tHum.Sit = false
+                tHum.PlatformStand = false
+            end
+        end
+    end
+end
+
+-- =============================================
+-- // ========== ANTI-GRAB ==========
+-- =============================================
+task.spawn(function()
+    while state.running and task.wait(0.01) do
+        if not state.antiGrab then continue end
+        
+        local char = getChar()
+        if not char then continue end
+        
+        local hrp = getHRP()
+        if not hrp then continue end
+        
+        local hum = getHum()
+        if not hum then continue end
+        
+        local grabbed = false
+        for _, v in pairs(char:GetChildren()) do
+            if v:IsA("BasePart") and v:FindFirstChild("PartOwner") then
+                grabbed = true
+                break
+            end
+        end
+        
+        if grabbed then
+            local remote = RS:FindFirstChild("CharacterEvents")
+            if remote then remote = remote:FindFirstChild("Struggle") end
+            if remote then pcall(function() remote:FireServer(plr) end) end
+            
+            local ragdollRemote = RS:FindFirstChild("CharacterEvents")
+            if ragdollRemote then ragdollRemote = ragdollRemote:FindFirstChild("RagdollRemote") end
+            if ragdollRemote then pcall(function() ragdollRemote:FireServer(hrp, 0) end) end
+            
+            hum.PlatformStand = true
+            hum.Sit = true
+            hum.WalkSpeed = 0
+            hum.JumpPower = 0
+            hum.AutoRotate = false
+            
+            for _, part in pairs(char:GetChildren()) do
+                if part:IsA("BasePart") then
+                    pcall(function()
+                        part.Anchored = true
+                        part.AssemblyLinearVelocity = Vector3.zero
+                        part.AssemblyAngularVelocity = Vector3.zero
+                    end)
+                end
+            end
+            
+            local bp = hrp:FindFirstChild("AntiGrabBP")
+            if not bp then
+                bp = Instance.new("BodyPosition")
+                bp.Name = "AntiGrabBP"
+                bp.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                bp.P = 100000
+                bp.D = 50000
+                bp.Parent = hrp
+            end
+            bp.Position = hrp.Position
+            
+            local savedPos = hrp.Position
+            local savedCF = hrp.CFrame
+            
+            while grabbed and state.antiGrab and char and char.Parent do
+                grabbed = false
+                for _, v in pairs(char:GetChildren()) do
+                    if v:IsA("BasePart") and v:FindFirstChild("PartOwner") then
+                        grabbed = true
+                        break
+                    end
+                end
+                if not grabbed then break end
+                
+                if (hrp.Position - savedPos).Magnitude > 0.5 then
+                    pcall(function()
+                        hrp.CFrame = savedCF
+                        hrp.AssemblyLinearVelocity = Vector3.zero
+                        hrp.AssemblyAngularVelocity = Vector3.zero
+                        bp.Position = savedPos
+                    end)
+                end
+                
+                pcall(function() bp.Position = savedPos end)
+                task.wait(0.02)
+            end
+            
+            pcall(function()
+                hum.PlatformStand = false
+                hum.Sit = false
+                hum.WalkSpeed = 16
+                hum.JumpPower = 50
+                hum.AutoRotate = true
+                for _, part in pairs(char:GetChildren()) do
+                    if part:IsA("BasePart") then
+                        part.Anchored = false
+                        part.AssemblyLinearVelocity = Vector3.zero
+                        part.AssemblyAngularVelocity = Vector3.zero
+                    end
+                end
+                if bp then bp:Destroy() end
+            end)
+        else
+            pcall(function()
+                hum.PlatformStand = false
+                hum.Sit = false
+                hum.WalkSpeed = 16
+                hum.JumpPower = 50
+                hum.AutoRotate = true
+                for _, part in pairs(char:GetChildren()) do
+                    if part:IsA("BasePart") then
+                        part.Anchored = false
+                    end
+                end
+                local bp = hrp:FindFirstChild("AntiGrabBP")
+                if bp then bp:Destroy() end
+            end)
+        end
+    end
+end)
+
+-- =============================================
+-- // ========== МЕНЮ ==========
+-- =============================================
+local function LoadMenu()
+    local Window = Library:CreateWindow({
+        Title = "MoonHub | Polar Kicks",
+        Theme = "Void",
+        ToggleKey = Enum.KeyCode.Tab,
+        Transparency = 0.15,
+        ShowWatermark = {
+            Enabled = true,
+            Title = true,
+            User = false,
+            FPS = true,
+            Time = false,
+            Ping = true
+        },
+        ConfigFolder = "MoonHubPolar",
+        CornerRadius = 10,
+        UiScale = 1.0
+    })
+
+    local tab1 = Window:CreateTab({Name = "Protections", Icon = 7734056608})
+    local tab2 = Window:CreateTab({Name = "Target & Kicks", Icon = 7485051715})
+    local tab3 = Window:CreateTab({Name = "Player", Icon = 7743871002})
+    local tab4 = Window:CreateTab({Name = "Visuals", Icon = 7733774602})
+    local tab5 = Window:CreateTab({Name = "Auras", Icon = 7733666258})
+    local tab6 = Window:CreateTab({Name = "Extras", Icon = 4483362458})
+
+    -- ===== PROTECTIONS =====
+    tab1:CreateSection("Main Protections")
+    
+    tab1:CreateToggle({
+        Name = "Anti-Grab",
+        Default = false,
+        Flag = "AntiGrab",
+        Callback = function(v) state.antiGrab = v end
+    })
+
+    -- ===== TARGET & KICKS =====
+    tab2:CreateSection("Target Management")
+    
+    tab2:CreateInput({
+        Name = "Target Name",
+        Placeholder = "Enter player name",
+        Default = "",
+        Flag = "TargetInput",
+        Callback = function(v)
+            if v and v ~= "" then
+                state.targetPlayer = getPlayerByName(v)
+                if state.targetPlayer then
+                    Library:Notify({Title = "Target", Content = "Selected: " .. state.targetPlayer.Name, Duration = 2})
+                else
+                    Library:Notify({Title = "Error", Content = "Player not found!", Duration = 2})
+                end
+            end
+        end
+    })
+    
+    tab2:CreateSection("Kicks (From Polar Hub)")
+    
+    tab2:CreateToggle({
+        Name = "Ownership Kick",
+        Description = "Забирает контроль + BodyPosition в небо",
+        Default = false,
+        Flag = "OwnershipKick",
+        Callback = function(v)
+            state.ownershipKick = v
+            if v then
+                if state.targetPlayer then
+                    local targetName = state.targetPlayer
+                    if type(targetName) == "table" then targetName = targetName.Name end
+                    ownershipKickTask = task.spawn(function()
+                        OwnershipKickFunction(targetName)
+                    end)
+                else
+                    state.ownershipKick = false
+                    Library:Notify({Title = "Error", Content = "Select target first!", Duration = 2})
+                end
+            else
+                if ownershipKickTask then
+                    task.cancel(ownershipKickTask)
+                    ownershipKickTask = nil
+                end
+            end
+        end
+    })
+    
+    tab2:CreateToggle({
+        Name = "Pallet Ragdoll",
+        Description = "Спавнит паллету и рагдоллит цель",
+        Default = false,
+        Flag = "PalletRagdoll",
+        Callback = function(v)
+            state.palletRagdoll = v
+            if v then
+                if state.targetPlayer then
+                    local targetName = state.targetPlayer
+                    if type(targetName) == "table" then targetName = targetName.Name end
+                    palletRagdollTask = task.spawn(function()
+                        PalletRagdollFunction(targetName)
+                    end)
+                else
+                    state.palletRagdoll = false
+                    Library:Notify({Title = "Error", Content = "Select target first!", Duration = 2})
+                end
+            else
+                if palletRagdollTask then
+                    task.cancel(palletRagdollTask)
+                    palletRagdollTask = nil
+                end
+            end
+        end
+    })
+    
+    tab2:CreateToggle({
+        Name = "Loop Kill",
+        Description = "Телепорт + SetNetworkOwner + убийство",
+        Default = false,
+        Flag = "LoopKill",
+        Callback = function(v)
+            state.loopKill = v
+            if v then
+                if state.targetPlayer then
+                    local targetName = state.targetPlayer
+                    if type(targetName) == "table" then targetName = targetName.Name end
+                    loopKillTask = task.spawn(function()
+                        LoopKillFunction(targetName)
+                    end)
+                else
+                    state.loopKill = false
+                    Library:Notify({Title = "Error", Content = "Select target first!", Duration = 2})
+                end
+            else
+                if loopKillTask then
+                    task.cancel(loopKillTask)
+                    loopKillTask = nil
+                end
+            end
+        end
+    })
+    
+    tab2:CreateToggle({
+        Name = "Blob Kill",
+        Description = "Блобман убивает цель",
+        Default = false,
+        Flag = "BlobKill",
+        Callback = function(v)
+            state.blobKill = v
+            if v then
+                if state.targetPlayer then
+                    local targetName = state.targetPlayer
+                    if type(targetName) == "table" then targetName = targetName.Name end
+                    blobKillTask = task.spawn(function()
+                        BlobKillFunction(targetName)
+                    end)
+                else
+                    state.blobKill = false
+                    Library:Notify({Title = "Error", Content = "Select target first!", Duration = 2})
+                end
+            else
+                if blobKillTask then
+                    task.cancel(blobKillTask)
+                    blobKillTask = nil                end
+            end
+        end
+    })
+    
+    tab2:CreateToggle({
+        Name = "Lock Target",
+        Description = "Фиксирует цель на месте",
+        Default = false,
+        Flag = "LockTarget",
+        Callback = function(v)
+            state.lockTarget = v
+            if v then
+                if state.targetPlayer then
+                    local targetName = state.targetPlayer
+                    if type(targetName) == "table" then targetName = targetName.Name end
+                    lockTask = task.spawn(function()
+                        LockTargetFunction(targetName)
+                    end)
+                else
+                    state.lockTarget = false
+                    Library:Notify({Title = "Error", Content = "Select target first!", Duration = 2})
+                end
+            else
+                lockRunning = false
+                if lockTask then
+                    task.cancel(lockTask)
+                    lockTask = nil
+                end
+            end
+        end
+    })
+
+    -- ===== PLAYER =====
+    tab3:CreateSection("Player Settings")
+    
+    tab3:CreateToggle({
+        Name = "Infinite Jump",
+        Default = false,
+        Flag = "InfJump",
+        Callback = function(v) 
+            if v then
+                UIS.JumpRequest:Connect(function()
+                    local hum = getHum()
+                    if hum then pcall(function() hum:ChangeState(Enum.HumanoidStateType.Jumping) end) end
+                end)
+            end
+        end
+    })
+    
+    tab3:CreateToggle({
+        Name = "Speed",
+        Default = false,
+        Flag = "Speed",
+        Callback = function(v) 
+            if v then
+                task.spawn(function()
+                    while state.running do
+                        if not v then break end
+                        local hrp = getHRP()
+                        local hum = getHum()
+                        if hrp and hum and hum.MoveDirection.Magnitude > 0 then
+                            pcall(function()
+                                hrp.CFrame = hrp.CFrame + hum.MoveDirection * 1.6
+                            end)
+                        end
+                        task.wait(0.05)
+                    end
+                end)
+            end
+        end
+    })
+    
+    tab3:CreateToggle({
+        Name = "No Clip",
+        Default = false,
+        Flag = "NoClip",
+        Callback = function(v) 
+            if v then
+                task.spawn(function()
+                    while state.running do
+                        if not v then break end
+                        local char = getChar()
+                        if char then
+                            for _, part in pairs(char:GetChildren()) do
+                                if part:IsA("BasePart") then
+                                    pcall(function() part.CanCollide = false end)
+                                end
+                            end
+                        end
+                        task.wait(0.1)
+                    end
+                end)
+            end
+        end
+    })
+    
+    tab3:CreateToggle({
+        Name = "Fly",
+        Default = false,
+        Flag = "Fly",
+        Callback = function(v)
+            local flyBV, flyBG
+            if v then
+                task.spawn(function()
+                    while state.running do
+                        if not v then 
+                            if flyBV then flyBV:Destroy() end
+                            if flyBG then flyBG:Destroy() end
+                            break 
+                        end
+                        local hrp = getHRP()
+                        if not hrp then continue end
+                        if not flyBV then
+                            flyBV = Instance.new("BodyVelocity")
+                            flyBV.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                            flyBV.P = 10000
+                            flyBV.Parent = hrp
+                        end
+                        if not flyBG then
+                            flyBG = Instance.new("BodyGyro")
+                            flyBG.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                            flyBG.P = 20000
+                            flyBG.Parent = hrp
+                        end
+                        local move = Vector3.zero
+                        if UIS:IsKeyDown(Enum.KeyCode.W) then move = move + Camera.CFrame.LookVector end
+                        if UIS:IsKeyDown(Enum.KeyCode.S) then move = move - Camera.CFrame.LookVector end
+                        if UIS:IsKeyDown(Enum.KeyCode.A) then move = move - Camera.CFrame.RightVector end
+                        if UIS:IsKeyDown(Enum.KeyCode.D) then move = move + Camera.CFrame.RightVector end
+                        if UIS:IsKeyDown(Enum.KeyCode.Space) then move = move + Vector3.new(0, 1, 0) end
+                        if UIS:IsKeyDown(Enum.KeyCode.LeftControl) then move = move - Vector3.new(0, 1, 0) end
+                        flyBV.Velocity = move * 50
+                        flyBG.CFrame = Camera.CFrame
+                        task.wait(0.05)
+                    end
+                end)
+            end
+        end
+    })
+
+    -- ===== VISUALS =====
+    tab4:CreateSection("Visuals")
+    
+    tab4:CreateToggle({
+        Name = "Third Person",
+        Default = false,
+        Flag = "ThirdPerson",
+        Callback = function(v)
+            if v then
+                plr.CameraMode = Enum.CameraMode.Classic
+                plr.CameraMaxZoomDistance = 10000
+                plr.CameraMinZoomDistance = 0.5
+            else
+                plr.CameraMode = Enum.CameraMode.LockFirstPerson
+                plr.CameraMaxZoomDistance = 0
+                plr.CameraMinZoomDistance = 0
+            end
+        end
+    })
+    
+    tab4:CreateSlider({
+        Name = "FOV",
+        Min = 1, Max = 120, Default = 90,
+        Flag = "FOV",
+        Callback = function(v) Camera.FieldOfView = v end
+    })
+
+    -- ===== AURAS =====
+    tab5:CreateSection("Auras")
+    
+    tab5:CreateToggle({
+        Name = "Death Aura",
+        Default = false,
+        Flag = "DeathAura",
+        Callback = function(v)
+            if v then
+                task.spawn(function()
+                    while state.running do
+                        if not v then break end
+                        local hrp = getHRP()
+                        if hrp then
+                            for _, target in pairs(Players:GetPlayers()) do
+                                if target ~= plr then
+                                    local char = target.Character
+                                    if char then
+                                        local tRoot = char:FindFirstChild("HumanoidRootPart")
+                                        local tHum = char:FindFirstChild("Humanoid")
+                                        if tRoot and tHum and tHum.Health > 0 and (hrp.Position - tRoot.Position).Magnitude <= 29 then
+                                            pcall(function()
+                                                SetNetworkOwner:FireServer(tRoot, tRoot.CFrame)
+                                                DestroyGrabLine:FireServer(tRoot)
+                                                tHum.Health = 0
+                                            end)
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                        task.wait(0.1)
+                    end
+                end)
+            end
+        end
+    })
+
+    -- ===== EXTRAS =====
+    tab6:CreateSection("Extra")
+    
+    tab6:CreateButton({
+        Name = "Rejoin Server",
+        Callback = function()
+            Library:Notify({Title = "Rejoin", Content = "Rejoining...", Duration = 2})
+            task.wait(1)
+            TeleportService:Teleport(game.PlaceId, plr)
+        end
+    })
+    
+    tab6:CreateButton({
+        Name = "Unload Menu",
+        Callback = function()
+            state.running = false
+            if Window then Window:Destroy() end
+            Library:Notify({Title = "Menu", Content = "Unloaded!", Duration = 2})
+        end
+    })
+
+    Window:Init()
+end
+
+-- =============================================
+-- // ЗАПУСК
+-- =============================================
+KeySystem()
+print("[MoonHub] Loaded with Polar Kicks!")
